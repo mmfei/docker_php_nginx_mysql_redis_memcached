@@ -5,8 +5,7 @@ services:
       container_name: nginx
       # network_mode: "host"
       volumes:
-        - ~/Work:/opt/web
-        - ~/Work/log:/opt/log
+        - ~/Work:/data1
       restart: always
       ports:
         - "80:80"
@@ -17,13 +16,15 @@ services:
         - php:php
         - mysql:mysql
         - redis:redis
+        - memcached:memcached
+        - elasticsearch:elasticsearch
+        - rabbitmq:rabbitmq
   php:
       build: ./php5
       container_name: php
       # network_mode: "host"
       volumes:
-        - ~/Work:/opt/web
-        - ~/Work/log:/opt/log
+        - ~/Work:/data1
       restart: always
       ports:
         - "9000:9000"
@@ -33,7 +34,7 @@ services:
       # network_mode: "host"
       volumes:
         - ~/Work/data/mysql:/var/lib/mysql
-        - ~/Work/log:/opt/log
+        - ~/Work/log:/data1/log
       environment:
         MYSQL_ROOT_PASSWORD: 123456
       restart: always
@@ -45,24 +46,24 @@ services:
       # network_mode: "host"
       volumes:
         - ~/Work/data/redis:/data
-        - ~/Work/log:/opt/log
+        - ~/Work/log:/data1/log
       restart: always
       ports:
         - "6379:6379"
-
   memcached:
     image: memcached
+    container_name: memcached
     ports:
       - "11211:11211"
-
   elasticsearch:
     image: elasticsearch
+    container_name: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
-
   rabbitmq:
     image: rabbitmq:3.6.1-management
+    container_name: rabbitmq
     ports:
       - "15672:15672"
       - "5672:5672"

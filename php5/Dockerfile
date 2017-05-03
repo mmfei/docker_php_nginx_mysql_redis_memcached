@@ -46,9 +46,9 @@ RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xd
 RUN echo "xdebug.remote_host=192.168.99.100" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 
-WORKDIR /opt
+WORKDIR /data1
 
 RUN usermod -u 1000 www-data
 RUN  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 EXPOSE 9000
-VOLUME ["/opt"]
+VOLUME ["/data1"]

@@ -30,8 +30,8 @@ Clone本项目
 
 ```
 cd ~/Work
-git clone https://github.com/charleskun/DockerFilesForPhpDev.git
-cd DockerFilesForPhpDev
+git clone https://github.com/mmfei/docker_php_nginx_mysql_redis_memcached
+cd docker_php_nginx_mysql_redis_memcached
 ```
 
 docker-compose 构建docker服务
@@ -58,7 +58,7 @@ docker-compose up -d
 ## 测试 phpinfo()
 
 ```
-echo '<?php phpinfo(); ?>' > ~/Work/phpinfo.php
+echo '<?php phpinfo(); ?>' > ~/Work/htdocs/default/phpinfo.php
 ```
 
 现在可以通过访问`http://127.0.0.1/phpinfo.php` 来查看phpinfo
