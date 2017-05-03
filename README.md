@@ -34,6 +34,40 @@ git clone https://github.com/mmfei/docker_php_nginx_mysql_redis_memcached
 cd docker_php_nginx_mysql_redis_memcached
 ```
 
+## 创建Work脚本
+```
+mkdir -p ~/Work/data;
+mkdir -p ~/Work/htdocs/default;
+mkdir -p ~/Work/log/nginx;
+mkdir -p ~/Work/log/php;
+```
+## ~/Work 目录结构(只列出容器需要的目录 , 需要自己提前创建)
+```
+/Users/mmfei/Work
+├── data
+│   ├── mysql
+│   │   ├── auto.cnf
+│   │   ├── ib_logfile0
+│   │   ├── ib_logfile1
+│   │   ├── ibdata1
+│   │   ├── mysql
+│   │   └── performance_schema
+│   └── redis
+│       └── dump.rdb
+├── htdocs
+│   ├── adapi.mmfei.cn
+│   ├── adnew.mmfei.cn
+│   └── default
+│       └── phpinfo.php
+└── log
+    ├── nginx
+    │   ├── access.log
+    │   └── error.log
+    └── php
+        ├── fpm-access.log
+        └── fpm-error.log
+```
+
 docker-compose 构建docker服务
 
 ```
