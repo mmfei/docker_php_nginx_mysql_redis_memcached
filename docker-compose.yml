@@ -1,0 +1,68 @@
+version: '2'
+services:
+  nginx:
+      build: ./nginx
+      container_name: nginx
+      # network_mode: "host"
+      volumes:
+        - ~/Work:/opt/web
+        - ~/Work/log:/opt/log
+      restart: always
+      ports:
+        - "80:80"
+        # - "9000:9000"
+        # - "3306:3306"
+        # - "6379:6379"
+      links:
+        - php:php
+        - mysql:mysql
+        - redis:redis
+  php:
+      build: ./php5
+      container_name: php
+      # network_mode: "host"
+      volumes:
+        - ~/Work:/opt/web
+        - ~/Work/log:/opt/log
+      restart: always
+      ports:
+        - "9000:9000"
+  mysql:
+      build: ./mysql/file
+      container_name: mysql
+      # network_mode: "host"
+      volumes:
+        - ~/Work/data/mysql:/var/lib/mysql
+        - ~/Work/log:/opt/log
+      environment:
+        MYSQL_ROOT_PASSWORD: 123456
+      restart: always
+      ports:
+        - "3306:3306"
+  redis:
+      build: ./redis/file
+      container_name: redis
+      # network_mode: "host"
+      volumes:
+        - ~/Work/data/redis:/data
+        - ~/Work/log:/opt/log
+      restart: always
+      ports:
+        - "6379:6379"
+
+  memcached:
+    image: memcached
+    ports:
+      - "11211:11211"
+
+  elasticsearch:
+    image: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  rabbitmq:
+    image: rabbitmq:3.6.1-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
