@@ -24,8 +24,6 @@ Docker for Mac整合了docker-machine , docker-compose
 ![](png/docker02.png)
 
 
-## Docker-compose 使用
-
 Clone本项目
 
 ```
@@ -34,12 +32,25 @@ git clone https://github.com/mmfei/docker_php_nginx_mysql_redis_memcached
 cd docker_php_nginx_mysql_redis_memcached
 ```
 
+## 一键完成(在进入clone出来的项目目录中执行)
+```
+mkdir -p ~/Work/data;mkdir -p ~/Work/htdocs/default;mkdir -p ~/Work/log/nginx;mkdir -p ~/Work/log/php;mkdir -p ~/Work/data/elasticsearch;mkdir -p ~/Work/elasticsearch/data;mkdir -p ~/Work/logstash/conf;echo '<?php phpinfo(); ?>' > ~/Work/htdocs/default/phpinfo.php;docker-compose build;docker-compose up -d;docker-compose ps;open http://localhost/phpinfo.php;
+```
+
+# 下面是对上面一键完成命令的步骤分部解释
+
+## Docker-compose 使用
+
+
 ## 创建Work脚本
 ```
 mkdir -p ~/Work/data;
 mkdir -p ~/Work/htdocs/default;
 mkdir -p ~/Work/log/nginx;
 mkdir -p ~/Work/log/php;
+mkdir -p ~/Work/data/elasticsearch;
+mkdir -p ~/Work/elasticsearch/data;
+mkdir -p ~/Work/logstash/conf;
 ```
 ## ~/Work 目录结构(只列出容器需要的目录 , 需要自己提前创建)
 ```

@@ -55,15 +55,54 @@ services:
     container_name: memcached
     ports:
       - "11211:11211"
-  elasticsearch:
-    image: elasticsearch
-    container_name: elasticsearch
-    ports:
-      - "9200:9200"
-      - "9300:9300"
   rabbitmq:
     image: rabbitmq:3.6.1-management
     container_name: rabbitmq
     ports:
       - "15672:15672"
       - "5672:5672"
+
+  elasticsearch:
+    image: elasticsearch:latest
+    container_name: elasticsearch
+    volumes:
+      - ~/Work/elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      - ES_CLUSTERNAME=mydevelastic
+    command: elasticsearch -Des.config=/usr/share/elasticsearch/data/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana-frontend:
+    image: kibana:latest
+    container_name: kibana-frontend
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch:elasticsearch
+      
+  # logstash-central:
+  #   image: logstash:latest
+  #   container_name: logstash-central
+  #   ports:
+  #     - "25826:25826"
+  #     - "25826:25826/udp"
+  #   volumes:
+  #     - ~/Work/logstash/conf:/conf
+  #   command: logstash -f /conf/central.conf
+  #   links:
+  #     - redis:redis
+  #     - elasticsearch:db
+
+  # logstash-agent:
+  #   image: logstash:latest
+  #   container_name: logstash-agent
+  #   ports:
+  #     - "25827:25827"
+  #     - "25827:25827/udp"
+  #   volumes:
+  #     - ~/Work/logstash/conf:/conf
+  #   command: logstash -f /conf/agent.conf
+  #   links:
+  #     - redis:redis
