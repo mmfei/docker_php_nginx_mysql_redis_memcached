@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
         #&& docker-php-ext-install zip \
         && pecl install redis \
         && docker-php-ext-enable redis
+RUN docker-php-ext-install mysql
 ADD php.ini    /usr/local/etc/php/php.ini
 ADD php-fpm.conf    /usr/local/etc/php-fpm.conf
 
