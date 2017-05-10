@@ -14,6 +14,8 @@ services:
         # - "6379:6379"
       links:
         - php:php
+        - adapi.devmobvista.com:adapi.devmobvista.com
+        - adnew.devmobvista.com:adnew.devmobvista.com
         - mysql:mysql
         - redis:redis
         - memcached:memcached
@@ -28,6 +30,24 @@ services:
       restart: always
       ports:
         - "9000:9000"
+  adapi.devmobvista.com:
+      build: ./php5
+      container_name: adapi.devmobvista.com
+      # network_mode: "host"
+      volumes:
+        - ~/Work:/data1
+      restart: always
+      ports:
+        - "9001:9001"
+  adnew.devmobvista.com:
+      build: ./php5
+      container_name: adnew.devmobvista.com
+      # network_mode: "host"
+      volumes:
+        - ~/Work:/data1
+      restart: always
+      ports:
+        - "9002:9002"
   mysql:
       build: ./mysql/file
       container_name: mysql
@@ -106,3 +126,4 @@ services:
   #   command: logstash -f /conf/agent.conf
   #   links:
   #     - redis:redis
+
