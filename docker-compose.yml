@@ -38,7 +38,7 @@ services:
         - ~/Work:/data1
       restart: always
       ports:
-        - "9001:9001"
+        - "9001:9000"
   adnew.devmobvista.com:
       build: ./php5
       container_name: adnew.devmobvista.com
@@ -47,7 +47,7 @@ services:
         - ~/Work:/data1
       restart: always
       ports:
-        - "9002:9002"
+        - "9002:9000"
   mysql:
       build: ./mysql/file
       container_name: mysql
