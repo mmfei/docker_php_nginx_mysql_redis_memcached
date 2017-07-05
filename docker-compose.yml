@@ -1,8 +1,8 @@
 version: '2'
 services:
-  adapi.devmobvista.com:
+  pmdapi.dev.com:
       build: ./nginx
-      container_name: adapi.devmobvista.com
+      container_name: pmdapi.dev.com
       # network_mode: "host"
       volumes:
         - ~/Work:/data1
@@ -14,7 +14,7 @@ services:
         # - "6379:6379"
       links:
         - php:php
-        # - adapi.devmobvista.com:adapi.devmobvista.com
+        # - pmd.dev.com:pmd.dev.com
         # - adnew.devmobvista.com:adnew.devmobvista.com
         - mysql:mysql
         - redis:redis
@@ -30,9 +30,9 @@ services:
       restart: always
       ports:
         - "9000:9000"
-  # adapi.devmobvista.com:
+  # pmd.dev.com:
   #     build: ./php5
-  #     container_name: adapi.devmobvista.com
+  #     container_name: pmd.dev.com
   #     # network_mode: "host"
   #     volumes:
   #       - ~/Work:/data1
