@@ -1,6 +1,7 @@
 version: '2'
 services:
   pmdapi.dev.com:
+      #build: ./nginx.mmfei
       build: ./nginx
       container_name: pmdapi.dev.com
       # network_mode: "host"
@@ -9,6 +10,7 @@ services:
       restart: always
       ports:
         - "80:80"
+        - "1935:1935"
         # - "9000:9000"
         # - "3306:3306"
         # - "6379:6379"
@@ -19,8 +21,9 @@ services:
         - mysql:mysql
         - redis:redis
         - memcached:memcached
-        - elasticsearch:elasticsearch
-        - rabbitmq:rabbitmq
+        # - elasticsearch1:elasticsearch1
+        # - elasticsearch2:elasticsearch
+        # - rabbitmq:rabbitmq
   php:
       build: ./php5
       container_name: php
@@ -30,6 +33,8 @@ services:
       restart: always
       ports:
         - "9000:9000"
+        - "8080:80"
+        # - "19000:19000"
   # pmd.dev.com:
   #     build: ./php5
   #     container_name: pmd.dev.com
@@ -75,32 +80,70 @@ services:
     container_name: memcached
     ports:
       - "11211:11211"
-  rabbitmq:
-    image: rabbitmq:3.6.1-management
-    container_name: rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
+  # rabbitmq:
+  #   image: rabbitmq:3.6.1-management
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "15672:15672"
+  #     - "5672:5672"
 
-  elasticsearch:
-    image: elasticsearch:latest
-    container_name: elasticsearch
-    volumes:
-      - ~/Work/elasticsearch/data:/usr/share/elasticsearch/data
-    environment:
-      - ES_CLUSTERNAME=mydevelastic
-    command: elasticsearch -Des.config=/usr/share/elasticsearch/data/elasticsearch.yml
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+#   elasticsearch1:
+#     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+#     container_name: elasticsearch1
+#     environment:
+#       - cluster.name=docker-cluster
+#       - bootstrap.memory_lock=true
+#       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#     mem_limit: 1g
+#     volumes:
+#       - ~/Work/elasticsearch/data/1:/usr/share/elasticsearch/data
+#     ports:
+#       - 9200:9200
+#     networks:
+#       - esnet
+#   elasticsearch2:
+#     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+#     environment:
+#       - cluster.name=docker-cluster
+#       - bootstrap.memory_lock=true
+#       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#       - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#     mem_limit: 1g
+#     volumes:
+#       - ~/Work/elasticsearch/data/2:/usr/share/elasticsearch/data
+#     networks:
+#       - esnet
 
-  kibana-frontend:
-    image: kibana:latest
-    container_name: kibana-frontend
-    ports:
-      - "5601:5601"
-    links:
-      - elasticsearch:elasticsearch
+# networks:
+#   esnet:
+
+  # elasticsearch:
+  #   image: elasticsearch:latest
+  #   container_name: elasticsearch
+  #   volumes:
+  #     - ~/Work/elasticsearch/data:/usr/share/elasticsearch/data
+  #   environment:
+  #     - ES_CLUSTERNAME=mydevelastic
+  #   command: elasticsearch -Des.config=/usr/share/elasticsearch/data/elasticsearch.yml
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+
+  # kibana-frontend:
+  #   image: kibana:latest
+  #   container_name: kibana-frontend
+  #   ports:
+  #     - "5601:5601"
+  #   links:
+  #     - elasticsearch:elasticsearch
       
   # logstash-central:
   #   image: logstash:latest
