@@ -7,6 +7,7 @@ services:
       # network_mode: "host"
       volumes:
         - ~/Work:/data1
+        - ~/Work/docker_php_nginx_mysql_redis_memcached/nginx/sites-enabled:/usr/local/nginx/conf/sites-enabled
       restart: always
       ports:
         - "80:80"
@@ -30,6 +31,7 @@ services:
       # network_mode: "host"
       volumes:
         - ~/Work:/data1
+        - ~/Work/docker_php_nginx_mysql_redis_memcached/nginx/sites-enabled:/usr/local/nginx/conf/sites-enabled
       restart: always
       ports:
         - "9000:9000"

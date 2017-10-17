@@ -70,19 +70,24 @@ RUN  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 RUN apt-get -y install libpcre3 libpcre3-dev zlib1g-dev libssl-dev build-essential wget
 RUN wget http://www.openssl.org/source/openssl-1.0.2a.tar.gz;tar -zxvf openssl-1.0.2a.tar.gz -C /usr/local/src/;cd /usr/local/src/openssl-1.0.2a/;./config;make && make install;
-ADD http://nginx.org/download/nginx-1.8.0.tar.gz .
-RUN tar zxvf nginx-1.8.0.tar.gz -C .
-RUN mkdir -p /usr/local/nginx
-RUN cd nginx-1.8.0 && ./configure --prefix=/usr/local/nginx --with-openssl=/usr/include/openssl && make && make install
+RUN wget http://nginx.org/download/nginx-1.8.0.tar.gz;tar zxvf nginx-1.8.0.tar.gz -C .;mkdir -p /usr/local/nginx;cd nginx-1.8.0 && ./configure --prefix=/usr/local/nginx --with-openssl=/usr/include/openssl && make && make install
 RUN rm -vf /usr/local/nginx/conf/nginx.conf
 
 ADD  nginx.conf      /usr/local/nginx/conf/nginx.conf
 ADD  locations.conf      /usr/local/nginx/conf/locations.conf
-ADD  sites-enabled/*    /usr/local/nginx/conf/conf.d/
+# ADD  sites-enabled/*    /usr/local/nginx/conf/conf.d/
 ADD  nginx    /etc/init.d/
 RUN  chmod a+x /etc/init.d/nginx;
+RUN  ln -s /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+ADD  run.sh    /
+RUN  chmod a+x /run.sh;
+ENTRYPOINT ["/run.sh"]
+
 # RUN  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-# CMD ["/usr/local/nginx/sbin/nginx"]
+# CMD ["/run.sh"]
+# CMD ["/etc/docker-entrypoint.sh", "/usr/local/nginx/sbin/nginx"]
+# ENTRYPOINT ["docker-entrypoint.sh /usr/local/nginx/sbin/nginx"]
+
 # nginx:80 php-fpm:9000
 EXPOSE 80 9000
 VOLUME ["/data1"]
