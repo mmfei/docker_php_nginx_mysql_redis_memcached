@@ -1,0 +1,13 @@
+version: '2'
+services:
+  mmfei.dev.com:
+      build: ./
+      container_name: mmfei.dev.com
+      # network_mode: "host"
+      volumes:
+        - ~/Work:/data1
+      restart: always
+      ports:
+        - "8081:80"
+      #links:
+        # - rabbitmq:rabbitmq

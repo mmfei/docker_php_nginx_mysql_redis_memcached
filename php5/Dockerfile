@@ -4,6 +4,7 @@ ENV NGINX_VERSION 1.13.5
 ENV LUA_MODULE_VERSION 0.10.10
 
 ADD sources.list    /etc/apt/sources.list
+RUN pecl channel-update pecl.php.net
 # 安装modules
 RUN apt-get update && apt-get install -y \
         #libxml2-dev \
@@ -14,19 +15,29 @@ RUN apt-get update && apt-get install -y \
         libpng12-dev \
         unzip \
         graphviz \
-        && docker-php-ext-install -j$(nproc) iconv mcrypt \
+        vim \
+        curl \
+        tree \
+        wget
+RUN docker-php-ext-install -j$(nproc) iconv mcrypt \
         && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-install -j$(nproc) gd \
         && docker-php-ext-install mysqli \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
-        #&& docker-php-ext-install zip \
-        && pecl install channel://pecl.php.net/xhprof-0.9.4 \
-        && docker-php-ext-enable xhprof \
-        && pecl install xdebug \
-        && docker-php-ext-enable xdebug \
-        && pecl install redis \
-        && docker-php-ext-enable redis
+        && docker-php-ext-install zip
+RUN pecl install channel://pecl.php.net/xhprof-0.9.4 \
+        && docker-php-ext-enable xhprof
+
+RUN pecl install channel://pecl.php.net/xdebug-2.5.5 \
+        && docker-php-ext-enable xdebug
+ 
+RUN pecl install redis \
+        && docker-php-ext-enable redis 
+RUN pecl install memcache \
+        && docker-php-ext-enable memcache
+RUN pecl install channel://pecl.php.net/memcached-2.2.0 \
+        && docker-php-ext-enable memcached
 RUN docker-php-ext-install mysql
 ADD php.ini    /usr/local/etc/php/php.ini
 ADD php-fpm.conf    /usr/local/etc/php-fpm.conf
@@ -41,7 +52,7 @@ RUN echo "xdebug.remote_port=19001" >> /usr/local/etc/php/conf.d/docker-php-ext-
 # RUN echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 # RUN echo "xdebug.auto_trace=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.remote_log=/var/log/xdebug_remote.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
+RUN wget https://getcomposer.org/installer -O composer-setup.php; php composer-setup.php; mv composer.phar /usr/local/bin/composer        
 
 # 安装 Xdebug
 # RUN curl -fsSL 'https://xdebug.org/files/xdebug-2.4.0.tgz' -o xdebug.tar.gz \
