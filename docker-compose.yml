@@ -17,6 +17,7 @@ services:
         # - "6379:6379"
       links:
         - php:php
+        - php7:php7
         # - pmd.dev.com:pmd.dev.com
         # - adnew.devmobvista.com:adnew.devmobvista.com
         - mysql:mysql
@@ -43,13 +44,13 @@ services:
       # network_mode: "host"
       volumes:
         - ~/Work:/data1
-        - ~/Work/docker_php_nginx_mysql_redis_memcached/nginx/sites-enabled:/usr/local/nginx/conf/sites-enabled
+        - ~/Work/docker_php_nginx_mysql_redis_memcached/php7/sites-enabled:/usr/local/nginx/conf/sites-enabled
       restart: always
       ports:
-        - "9000:9007"
-        - "8080:87"
+        - "9007:9000"
+        - "8087:80"
         # - "19000:19000"
-  # pmd.dev.com:
+  # pmd.dev.com
   #     build: ./php5
   #     container_name: pmd.dev.com
   #     # network_mode: "host"

@@ -10,8 +10,6 @@ ENV LOG_PREFIX /var/nginx/logs
 ENV CONF_PATH /usr/local/nginx/conf/nginx.conf
 ENV PHP_VERSION 7.2.0
 ENV TMP_PATH /tmp/uve_core_install
-RUN yum install -y wget
-RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup;wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo;yum clean all && yum check-update;yum makecache;
 
 COPY php7/ext $TMP_PATH
 
@@ -117,21 +115,8 @@ rm -rf $TMP_PATH; \
 rm -rf /usr/local/php7/etc; \
 echo "Done";
 
-RUN yum install -y python-setuptools; \
-#Install supervisor
-    easy_install supervisor && \
-    mkdir -p /var/{log/supervisor,run/{sshd,supervisord}}
-
-ADD supervisord.php7.conf /etc/
-
-
 COPY php7/php.ini /usr/local/php7/lib/php.ini
 COPY php7/etc /usr/local/php7/etc
-#Update nginx config
-ADD nginx.conf /usr/local/nginx/conf/
-ADD locations.conf /usr/local/nginx/conf/
-
-ADD start.php7.sh /
 
 VOLUME [ "/sys/fs/cgroup", "/usr/local/nginx/conf", "/data0/nginx/htdocs", "/data0/nginx/logs" ]
-ENTRYPOINT ["/start.php7.sh"]
+CMD ["/usr/sbin/init"]
