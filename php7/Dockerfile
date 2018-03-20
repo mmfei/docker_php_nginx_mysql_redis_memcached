@@ -110,9 +110,84 @@ git checkout php7; \
 ./configure --enable-redis --with-php-config=/usr/local/php7/bin/php-config; \
 make -j${NPROC}; \
 make install; \
+
+cd $TMP_PATH; \
+echo "Configure PHP...";
+
+COPY php7/php.ini /usr/local/php7/lib/php.ini
+RUN echo -e "[redis]\nextension = redis.so\n\n[memcached]\nextension = memcached.so\n" >> /usr/local/php7/lib/php.ini;
+
+RUN cd $TMP_PATH; \
+echo "Install icu ..."; \
+wget http://download.icu-project.org/files/icu4c/52.1/icu4c-52_1-src.tgz;\
+tar xf icu4c-52_1-src.tgz;\
+cd icu/source;\
+mkdir /usr/local/icu;\
+./configure --prefix=/usr/local/icu;\
+make && make install;
+
+RUN cd $TMP_PATH; \
+echo "Install PHP intl extension..."; \
+cd php-${PHP_VERSION}/ext/intl/; /usr/local/php7/bin/phpize; ./configure -h; ./configure --enable-intl --with-icu-dir=/usr/local/icu/ --with-php-config=/usr/local/php7/bin/php-config ;make && make install ;\
+
 cd $TMP_PATH; \
 echo "Configure PHP..."; \
-echo -e "[redis]\nextension = redis.so\n\n[memcached]\nextension = memcached.so\n" >> /usr/local/php7/lib/php.ini; \
+echo -e "\n\n[intl]\nextension=intl.so\n" >> /usr/local/php7/lib/php.ini;
+
+
+RUN cd $TMP_PATH; \
+echo "Install PHP memcache extension..."; \
+yum install -y unzip; \
+wget https://github.com/websupport-sk/pecl-memcache/archive/php7.zip -O pecl-memcache-php7.zip;\
+unzip pecl-memcache-php7.zip;\
+cd pecl-memcache-php7;\
+/usr/local/php7/bin/phpize;\
+./configure --with-php-config=/usr/local/php7/bin/php-config;\
+make && make install ;\
+echo -e "\n\n[memcache]\nextension=memcache.so\n" >> /usr/local/php7/lib/php.ini;
+
+
+RUN cd $TMP_PATH; \
+echo "Install PHP igbinary extension..."; \
+git clone https://github.com/igbinary/igbinary;\
+cd igbinary;\
+/usr/local/php7/bin/phpize;\
+./configure CFLAGS="-O2 -g" --enable-igbinary --with-php-config=/usr/local/php7/bin/php-config;\
+make && make install ;\
+echo -e "\n\n[igbinary]\nextension=igbinary.so\n\nsession.serialize_handler=igbinary\n" >> /usr/local/php7/lib/php.ini;
+
+RUN cd $TMP_PATH; \
+echo "Install ImageMagick ..."; \
+wget https://www.imagemagick.org/download/ImageMagick.tar.gz;\
+tar xvzf ImageMagick.tar.gz; \
+cd ImageMagick-*; \
+./configure --prefix=/usr/local/imagemagick;make;make install;
+
+RUN echo "Install PHP imagick extension..."; \
+wget https://pecl.php.net/get/imagick-3.4.3.tgz;\
+tar xvzf imagick-3.4.3.tgz;\
+cd imagick-3.4.3;\
+/usr/local/php7/bin/phpize;\
+./configure --with-php-config=/usr/local/php7/bin/php-config --with-imagick=/usr/local/imagemagick;\
+make;make install;\
+echo -e "\n\n[imagick]\nextension=imagick.so\n" >> /usr/local/php7/lib/php.ini;
+
+RUN echo "Install libdatrie..."; \
+wget ftp://linux.thai.net/pub/ThaiLinux/software/libthai/libdatrie-0.2.9.tar.xz;\
+tar xvf libdatrie-0.2.9.tar.xz;\
+cd libdatrie-0.2.9;\
+./configure --prefix=/usr/local/libdatrie;make;make install;
+
+RUN echo "Install PHP trie-filter extension..."; \
+git clone https://github.com/zzjin/php-ext-trie-filter;\
+cd php-ext-trie-filter;\
+/usr/local/php7/bin/phpize;\
+./configure --with-php-config=/usr/local/php7/bin/php-config --with-trie_filter=/usr/local/libdatrie;\
+make;make install;\
+echo -e "\n\n[trie_filter]\nextension=trie_filter.so\n" >> /usr/local/php7/lib/php.ini;
+
+
+RUN echo "Clean ..."; \
 rm -rf $TMP_PATH; \
 rm -rf /usr/local/php7/etc; \
 echo "Done";
@@ -124,14 +199,18 @@ RUN yum install -y python-setuptools; \
 
 ADD supervisord.php7.conf /etc/
 
+#Add user
+RUN set -x && \
+    useradd -r -s /sbin/nologin -m -k no www
 
-COPY php7/php.ini /usr/local/php7/lib/php.ini
-COPY php7/etc /usr/local/php7/etc
 #Update nginx config
 ADD nginx.conf /usr/local/nginx/conf/
 ADD locations.conf /usr/local/nginx/conf/
+COPY php7/etc /usr/local/php7/etc
 
 ADD start.php7.sh /
+RUN chmod +x /start.php7.sh
+
 
 VOLUME [ "/sys/fs/cgroup", "/usr/local/nginx/conf", "/data0/nginx/htdocs", "/data0/nginx/logs" ]
 ENTRYPOINT ["/start.php7.sh"]
