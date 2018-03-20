@@ -210,6 +210,11 @@ COPY php7/etc /usr/local/php7/etc
 
 ADD start.php7.sh /
 RUN chmod +x /start.php7.sh
+RUN echo "export PATH=$PATH:/usr/local/php7/bin" >> /etc/bashrc;
+RUN curl -sS https://getcomposer.org/installer | /usr/local/php7/bin/php;mv composer.phar /usr/local/bin/composer
+
+
+
 
 
 VOLUME [ "/sys/fs/cgroup", "/usr/local/nginx/conf", "/data0/nginx/htdocs", "/data0/nginx/logs" ]
