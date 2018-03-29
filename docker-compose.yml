@@ -1,9 +1,9 @@
 version: '2'
 services:
-  pmdapi.dev.com:
+  nginx:
       #build: ./nginx.mmfei
       build: ./nginx
-      container_name: pmdapi.dev.com
+      container_name: nginx
       # network_mode: "host"
       volumes:
         - ~/Work:/data1

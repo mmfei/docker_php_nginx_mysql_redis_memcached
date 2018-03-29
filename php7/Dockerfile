@@ -51,6 +51,7 @@ cd openresty-${OPENRESTY_VERSION}; \
     --without-http_userid_module \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
+    --with-pdo-mysql\
     -j${NPROC}; \
  echo "Building..."; \
  make -j${NPROC}; \
