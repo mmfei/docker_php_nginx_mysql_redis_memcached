@@ -1,13 +1,12 @@
 version: '2'
 services:
   nginx:
-      #build: ./nginx.mmfei
       build: ./nginx
       container_name: nginx
       # network_mode: "host"
       volumes:
         - ~/Work:/data1
-        - ~/Work/docker_php_nginx_mysql_redis_memcached/nginx/sites-enabled:/usr/local/nginx/conf/sites-enabled
+        - ~/Work/docker_php_nginx_mysql_redis_memcached/nginx/sites-enabled:/etc/nginx/servers
       restart: always
       ports:
         - "80:80"
@@ -18,8 +17,6 @@ services:
       links:
         - php:php
         - php7:php7
-        # - pmd.dev.com:pmd.dev.com
-        # - adnew.devmobvista.com:adnew.devmobvista.com
         - mysql:mysql
         - redis:redis
         - memcached:memcached
@@ -50,24 +47,6 @@ services:
         - "9007:9000"
         - "8087:80"
         # - "19000:19000"
-  # pmd.dev.com
-  #     build: ./php5
-  #     container_name: pmd.dev.com
-  #     # network_mode: "host"
-  #     volumes:
-  #       - ~/Work:/data1
-  #     restart: always
-  #     ports:
-  #       - "9001:9000"
-  # adnew.devmobvista.com:
-  #     build: ./php5
-  #     container_name: adnew.devmobvista.com
-  #     # network_mode: "host"
-  #     volumes:
-  #       - ~/Work:/data1
-  #     restart: always
-  #     ports:
-  #       - "9002:9000"
   mysql:
       build: ./mysql/file
       container_name: mysql
